@@ -15,27 +15,37 @@ Run the development server:
 ```bash
 npm run dev
 ```
+### Environment Variables
+
+Copy `.env.example` to `.env.local` (this file is ignored by Git):
+
+```bash
+cp .env.example .env.local
+```
+
+You can adjust the `DATABASE_URL` value in `.env.local` if needed.
 
 ## Database set up
 
-The app is configured to return a default list of advocates. This will allow you to get the app up and running without needing to configure a database. If you’d like to configure a database, you’re encouraged to do so. You can uncomment the url in `.env` and the line in `src/app/api/advocates/route.ts` to test retrieving advocates from the database.
+## Database set up
 
-1. Feel free to use whatever configuration of postgres you like. The project is set up to use docker-compose.yml to set up postgres. The url is in .env.
+Use the included Docker Compose to start Postgres and run migrations automatically:
 
 ```bash
-docker compose up -d
+npm run db:setup
 ```
 
-2. Create a `solaceassignment` database.
+This will:
+ 1. Start the Postgres container (`db` service in `docker-compose.yml`)
+ 2. Wait for Postgres to be ready
+ 3. Execute Drizzle migrations (`npx drizzle-kit push`)
 
-3. Push migration to the database
+### Seeding the database
+
+After starting the Next.js dev server (`npm run dev`), seed the database:
 
 ```bash
-npx drizzle-kit push
-```
-
-4. Seed the database
-
-```bash
+npm run seed
+# or
 curl -X POST http://localhost:3000/api/seed
 ```
