@@ -2,8 +2,8 @@ import { NextRequest } from "next/server";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 import { advocateData } from "../../../db/seed/advocates";
-import { or, ilike } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import { buildSearchCondition, filterAdvocatesMock } from "./searchHelpers";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -16,27 +16,13 @@ export async function GET(request: NextRequest) {
     if (process.env.DATABASE_URL) {
       let query = db.select().from(advocates);
       if (search) {
-        query = query.where(
-          or(
-            ilike(advocates.firstName, `%${search}%`),
-            ilike(advocates.lastName, `%${search}%`),
-            ilike(advocates.city, `%${search}%`),
-            ilike(advocates.degree, `%${search}%`)
-          )
-        );
+        query = query.where(buildSearchCondition(search));
       }
 
       // Count total matching rows
       let totalQuery = db.select({ count: sql`count(*)` }).from(advocates);
       if (search) {
-        totalQuery = totalQuery.where(
-          or(
-            ilike(advocates.firstName, `%${search}%`),
-            ilike(advocates.lastName, `%${search}%`),
-            ilike(advocates.city, `%${search}%`),
-            ilike(advocates.degree, `%${search}%`)
-          )
-        );
+        totalQuery = totalQuery.where(buildSearchCondition(search));
       }
       const totalResult = await totalQuery.execute();
       const total = Number(totalResult[0].count);
@@ -53,20 +39,9 @@ export async function GET(request: NextRequest) {
       });
     } else {
       // Mock data filtering & pagination
-      let filtered = advocateData;
-      if (search) {
-        const lower = search.toLowerCase();
-        filtered = filtered.filter((advocate) => {
-          return (
-            advocate.firstName.toLowerCase().includes(lower) ||
-            advocate.lastName.toLowerCase().includes(lower) ||
-            advocate.city.toLowerCase().includes(lower) ||
-            advocate.degree.toLowerCase().includes(lower) ||
-            advocate.specialties.some((spec) => spec.toLowerCase().includes(lower)) ||
-            advocate.yearsOfExperience.toString().includes(lower)
-          );
-        });
-      }
+      const filtered = search
+        ? filterAdvocatesMock(advocateData, search)
+        : advocateData;
       const total = filtered.length;
       const data = filtered.slice(offset, offset + limit);
       return Response.json({
