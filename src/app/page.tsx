@@ -145,7 +145,10 @@ export default function Home() {
 
 function formatPhoneNumber(phoneNumber: number): string {
   const phoneString = phoneNumber.toString();
-  if (phoneString.length !== 10) return phoneString;
+  if (phoneString.length !== 10) {
+    const groups = phoneString.match(/.{1,3}/g);
+    return groups ? groups.join("-") : phoneString;
+  }
 
   return `(${phoneString.slice(0, 3)}) ${phoneString.slice(
     3,
