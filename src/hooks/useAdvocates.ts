@@ -16,6 +16,8 @@ interface UseAdvocatesResult {
   pagination: PaginationData;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  selectedSpecialties: string[];
+  onSpecialtyChange: (specialty: string) => void;
   setPage: (page: number) => void;
 }
 
@@ -27,6 +29,7 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(initialLimit);
   const [pagination, setPagination] = useState<PaginationData>({
@@ -50,6 +53,9 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
         if (debouncedSearch) {
           params.set('search', debouncedSearch);
         }
+        selectedSpecialties.forEach((spec) => {
+          params.append('specialty', spec);
+        });
         const response = await fetch(`/api/advocates?${params}`);
         if (!response.ok) {
           throw new Error('Failed to fetch advocates');
@@ -65,12 +71,12 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
       }
     };
     fetchAdvocates();
-  }, [debouncedSearch, page, limit]);
+  }, [debouncedSearch, selectedSpecialties, page, limit]);
 
-  // Reset to first page when search term changes
+  // Reset to first page when search term or specialties change
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, selectedSpecialties]);
 
   return {
     advocates,
@@ -79,6 +85,14 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
     pagination,
     searchTerm,
     setSearchTerm,
+    selectedSpecialties,
+    onSpecialtyChange: (specialty: string) => {
+      setSelectedSpecialties((prev) =>
+        prev.includes(specialty)
+          ? prev.filter((s) => s !== specialty)
+          : [...prev, specialty]
+      );
+    },
     setPage,
   };
 }
