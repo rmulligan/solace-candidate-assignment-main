@@ -117,8 +117,8 @@ export default function Home() {
                 <td className="px-4 py-2 border">{advocate.degree}</td>
                 <td className="px-4 py-2 border">
                   <ul className="list-disc pl-5">
-                    {advocate.specialties.map((specialty, index) => (
-                      <li key={index}>{specialty}</li>
+                    {advocate.specialties.map((specialty) => (
+                      <li key={specialty}>{specialty}</li>
                     ))}
                   </ul>
                 </td>
