@@ -1,12 +1,89 @@
+import { NextRequest } from "next/server";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 import { advocateData } from "../../../db/seed/advocates";
+import { or, ilike } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
-export async function GET() {
-  // Uncomment this line to use a database
-  // const data = await db.select().from(advocates);
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
+  const search = searchParams.get("search")?.trim() || "";
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const offset = (page - 1) * limit;
 
-  const data = advocateData;
+  try {
+    if (process.env.DATABASE_URL) {
+      let query = db.select().from(advocates);
+      if (search) {
+        query = query.where(
+          or(
+            ilike(advocates.firstName, `%${search}%`),
+            ilike(advocates.lastName, `%${search}%`),
+            ilike(advocates.city, `%${search}%`),
+            ilike(advocates.degree, `%${search}%`)
+          )
+        );
+      }
 
-  return Response.json({ data });
+      // Count total matching rows
+      let totalQuery = db.select({ count: sql`count(*)` }).from(advocates);
+      if (search) {
+        totalQuery = totalQuery.where(
+          or(
+            ilike(advocates.firstName, `%${search}%`),
+            ilike(advocates.lastName, `%${search}%`),
+            ilike(advocates.city, `%${search}%`),
+            ilike(advocates.degree, `%${search}%`)
+          )
+        );
+      }
+      const totalResult = await totalQuery.execute();
+      const total = Number(totalResult[0].count);
+
+      const data = await query.limit(limit).offset(offset).execute();
+      return Response.json({
+        data,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    } else {
+      // Mock data filtering & pagination
+      let filtered = advocateData;
+      if (search) {
+        const lower = search.toLowerCase();
+        filtered = filtered.filter((advocate) => {
+          return (
+            advocate.firstName.toLowerCase().includes(lower) ||
+            advocate.lastName.toLowerCase().includes(lower) ||
+            advocate.city.toLowerCase().includes(lower) ||
+            advocate.degree.toLowerCase().includes(lower) ||
+            advocate.specialties.some((spec) => spec.toLowerCase().includes(lower)) ||
+            advocate.yearsOfExperience.toString().includes(lower)
+          );
+        });
+      }
+      const total = filtered.length;
+      const data = filtered.slice(offset, offset + limit);
+      return Response.json({
+        data,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching advocates:", error);
+    return Response.json(
+      { error: "Failed to fetch advocates" },
+      { status: 500 }
+    );
+  }
 }
