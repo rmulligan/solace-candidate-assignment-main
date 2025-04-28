@@ -21,9 +21,10 @@ export async function GET(request: NextRequest) {
         query = query.where(buildSearchCondition(search));
       }
       if (specialties.length > 0) {
-        specialties.forEach((spec) => {
-          query = query.where(sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`);
-        });
+        const specialtiesCondition = specialties
+          .map((spec) => sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`)
+          .reduce((acc, condition) => sql`${acc} OR ${condition}`);
+        query = query.where(specialtiesCondition);
       }
 
       // Count total matching rows
