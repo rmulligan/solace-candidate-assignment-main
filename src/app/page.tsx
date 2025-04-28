@@ -1,7 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import type { Advocate } from "@/types";
 import { useAdvocates } from "@/hooks/useAdvocates";
+import { AdvocateProfile } from "@/components/AdvocateProfile";
 import { SpecialtyFilter } from "@/components/SpecialtyFilter";
 import { SearchBar } from "@/components/SearchBar";
 import { AdvocateTable } from "@/components/AdvocateTable";
@@ -19,6 +21,7 @@ export default function Home() {
     onSpecialtyChange,
     setPage,
   } = useAdvocates(10);
+  const [selectedAdvocate, setSelectedAdvocate] = useState<Advocate | null>(null);
 
   // Loading and error states are handled within the UI below
 
@@ -47,9 +50,12 @@ export default function Home() {
         </div>
       )}
 
-      <AdvocateTable advocates={advocates} isLoading={isLoading} />
+      <AdvocateTable advocates={advocates} isLoading={isLoading} onRowClick={setSelectedAdvocate} />
 
       <Pagination currentPage={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} />
+      {selectedAdvocate && (
+        <AdvocateProfile advocate={selectedAdvocate} onClose={() => setSelectedAdvocate(null)} />
+      )}
     </main>
   );
 }

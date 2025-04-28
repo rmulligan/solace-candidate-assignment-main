@@ -21,11 +21,15 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   for (let i = startPage; i <= endPage; i++) pages.push(i);
 
   return (
-    <nav className="flex justify-center mt-6">
+    <nav className="flex justify-center mt-6" aria-label="Pagination Navigation">
       <ul className="flex space-x-1">
         {currentPage > 1 && (
           <li>
-            <button onClick={() => onPageChange(currentPage - 1)} className="px-3 py-2 border rounded-md hover:bg-gray-50">
+            <button
+              onClick={() => onPageChange(currentPage - 1)}
+              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              aria-label="Previous page"
+            >
               &laquo;
             </button>
           </li>
@@ -33,7 +37,11 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         {startPage > 1 && (
           <>
             <li>
-              <button onClick={() => onPageChange(1)} className="px-3 py-2 border rounded-md hover:bg-gray-50">
+              <button
+                onClick={() => onPageChange(1)}
+                className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="Go to page 1"
+              >
                 1
               </button>
             </li>
@@ -44,8 +52,9 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           <li key={n}>
             <button
               onClick={() => onPageChange(n)}
-              className={`px-3 py-2 border rounded-md ${currentPage === n ? 'bg-blue-500 text-white' : 'hover:bg-gray-50'}`}
+              className={`px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 ${currentPage === n ? 'bg-blue-500 text-white' : 'hover:bg-gray-50'}`}
               aria-current={currentPage === n ? 'page' : undefined}
+              aria-label={`Go to page ${n}`}
             >
               {n}
             </button>
@@ -63,7 +72,11 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         )}
         {currentPage < totalPages && (
           <li>
-            <button onClick={() => onPageChange(currentPage + 1)} className="px-3 py-2 border rounded-md hover:bg-gray-50">
+            <button
+              onClick={() => onPageChange(currentPage + 1)}
+              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              aria-label="Next page"
+            >
               &raquo;
             </button>
           </li>

@@ -5,9 +5,11 @@ import { formatPhoneNumber } from '@/utils';
 interface AdvocateTableProps {
   advocates: Advocate[];
   isLoading: boolean;
+  /** Optional click handler when a row is selected */
+  onRowClick?: (advocate: Advocate) => void;
 }
 
-export function AdvocateTable({ advocates, isLoading }: AdvocateTableProps) {
+export function AdvocateTable({ advocates, isLoading, onRowClick }: AdvocateTableProps) {
   if (isLoading) {
     return <TableSkeleton />;
   }
@@ -34,8 +36,15 @@ export function AdvocateTable({ advocates, isLoading }: AdvocateTableProps) {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {advocates.map((advocate) => (
-            <tr key={advocate.id} className="hover:bg-gray-50 transition-colors">
+        {advocates.map((advocate) => (
+          <tr
+            key={advocate.id}
+            role={onRowClick ? 'button' : undefined}
+            tabIndex={onRowClick ? 0 : undefined}
+            className={`hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300${onRowClick ? ' cursor-pointer' : ''}`}
+            onClick={() => onRowClick?.(advocate)}
+            onKeyDown={(e) => onRowClick && (e.key === 'Enter' || e.key === ' ') && onRowClick(advocate)}
+          >
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">{advocate.firstName} {advocate.lastName}</div>
               </td>
@@ -63,12 +72,31 @@ export function AdvocateTable({ advocates, isLoading }: AdvocateTableProps) {
 }
 
 function TableSkeleton() {
+  const columns = ['Name', 'Location', 'Credentials', 'Specialties', 'Experience', 'Contact'];
   return (
-    <div className="animate-pulse">
-      <div className="h-12 bg-gray-200 rounded mb-4"></div>
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="h-16 bg-gray-100 rounded mb-2"></div>
-      ))}
+    <div className="overflow-x-auto bg-white rounded-lg shadow animate-pulse">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            {columns.map((_, idx) => (
+              <th key={idx} className="px-6 py-3">
+                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {[...Array(5)].map((_, rowIdx) => (
+            <tr key={rowIdx}>
+              {columns.map((__, colIdx) => (
+                <td key={colIdx} className="px-6 py-4">
+                  <div className="h-4 bg-gray-100 rounded w-full"></div>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
