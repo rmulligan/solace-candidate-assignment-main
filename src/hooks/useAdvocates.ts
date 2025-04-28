@@ -56,7 +56,7 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
         if (debouncedSearch) {
         selectedSpecialties.forEach((spec) => params.append('specialty', spec));
         const response = await fetch(`/api/advocates?${params}`, { signal: controller.signal });
-        if (!response.ok) throw new Error('Failed to fetch advocates');
+        if (!response.ok) {
         const data = await response.json();
         setAdvocates(data.data);
         setPagination(data.pagination);
