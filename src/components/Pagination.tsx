@@ -17,7 +17,9 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
   if (endPage - startPage < 4) {
     if (startPage === 1) {
       endPage = Math.min(totalPages, 5);
-    } else startPage = Math.max(1, totalPages - 4);
+    } else {
+      startPage = Math.max(1, totalPages - 4);
+    }
   }
 
   const pages = [];
