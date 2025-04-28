@@ -61,7 +61,7 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
         setAdvocates(data.data);
         setPagination(data.pagination);
       } catch (err: any) {
-        if (err.name === 'AbortError') return;
+        if (err.name === 'AbortError') {
         console.error(err);
         setError(err.message || 'An error occurred');
       } finally {
