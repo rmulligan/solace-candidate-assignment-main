@@ -18,7 +18,7 @@ export function AdvocateProfile({ advocate, onClose }: AdvocateProfileProps) {
       aria-modal="true"
       aria-labelledby="dialog-title"
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform animate-fade-scale">
         <div className="p-6">
           <div className="flex justify-between items-start">
             <h2 id="dialog-title" className="text-2xl font-bold text-gray-900">

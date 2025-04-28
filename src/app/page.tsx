@@ -36,12 +36,14 @@ export default function Home() {
         selectedSpecialties={selectedSpecialties}
         onSpecialtyChange={onSpecialtyChange}
         className="mb-6"
+        disabled={isLoading}
       />
       <SearchBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         placeholder="Search by name, city, specialties..."
         className="mb-6"
+        disabled={isLoading}
       />
 
       {error && (

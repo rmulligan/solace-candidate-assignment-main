@@ -5,9 +5,11 @@ interface SearchBarProps {
   onSearchChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  /** Disable input and controls */
+  disabled?: boolean;
 }
 
-export function SearchBar({ searchTerm, onSearchChange, placeholder = 'Search...', className = '' }: SearchBarProps) {
+export function SearchBar({ searchTerm, onSearchChange, placeholder = 'Search...', className = '', disabled = false }: SearchBarProps) {
   return (
     <div className={`relative ${className}`}>
       <label htmlFor="search-input" className="sr-only">Search</label>
@@ -29,7 +31,8 @@ export function SearchBar({ searchTerm, onSearchChange, placeholder = 'Search...
       <input
         id="search-input"
         type="text"
-        className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        disabled={disabled}
+        className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder={placeholder}
@@ -38,8 +41,9 @@ export function SearchBar({ searchTerm, onSearchChange, placeholder = 'Search...
       {searchTerm && (
         <button
           type="button"
+          disabled={disabled}
           onClick={() => onSearchChange('')}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Clear search"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
