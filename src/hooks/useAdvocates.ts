@@ -19,6 +19,8 @@ interface UseAdvocatesResult {
   selectedSpecialties: string[];
   onSpecialtyChange: (specialty: string) => void;
   setPage: (page: number) => void;
+  /** Clear all selected specialties */
+  clearSpecialties: () => void;
 }
 
 /**
@@ -94,5 +96,6 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
       );
     },
     setPage,
+    clearSpecialties: () => setSelectedSpecialties([]),
   };
 }

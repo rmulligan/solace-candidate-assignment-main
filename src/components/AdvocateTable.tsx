@@ -24,15 +24,15 @@ export function AdvocateTable({ advocates, isLoading, onRowClick }: AdvocateTabl
 
   return (
     <div className="overflow-x-auto bg-white rounded-lg shadow animate-fade-in">
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full divide-y divide-gray-200 table-fixed">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credentials</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialties</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+            <th className="w-1/4 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th className="w-1/5 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+            <th className="w-1/6 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Credentials</th>
+            <th className="w-1/5 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Specialties</th>
+            <th className="w-1/6 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Experience</th>
+            <th className="w-1/6 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -45,24 +45,24 @@ export function AdvocateTable({ advocates, isLoading, onRowClick }: AdvocateTabl
             onClick={() => onRowClick?.(advocate)}
             onKeyDown={(e) => onRowClick && (e.key === 'Enter' || e.key === ' ') && onRowClick(advocate)}
           >
-              <td className="px-6 py-4 whitespace-nowrap">
+            <td className="px-4 py-2 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">{advocate.firstName} {advocate.lastName}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+            <td className="px-4 py-2 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{advocate.city}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+            <td className="px-4 py-2 whitespace-nowrap hidden sm:table-cell">
                 <div className="text-sm text-gray-900">{advocate.degree}</div>
               </td>
-              <td className="px-6 py-4">
+            <td className="px-4 py-2 hidden md:table-cell">
                 <div className="flex flex-wrap gap-1">
                   {advocate.specialties.map((specialty, index) => (
                     <span key={index} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">{specialty}</span>
                   ))}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{advocate.yearsOfExperience} years</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatPhoneNumber(advocate.phoneNumber)}</td>
+            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900 hidden lg:table-cell">{advocate.yearsOfExperience} years</td>
+            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{formatPhoneNumber(advocate.phoneNumber)}</td>
             </tr>
           ))}
         </tbody>
