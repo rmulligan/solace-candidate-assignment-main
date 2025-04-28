@@ -4,9 +4,11 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  /** Disable pagination controls while loading */
+  disabled?: boolean;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, onPageChange, disabled = false }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   let startPage = Math.max(1, currentPage - 2);
@@ -27,8 +29,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         {currentPage > 1 && (
           <li>
             <button
+              type="button"
               onClick={() => onPageChange(currentPage - 1)}
-              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              disabled={disabled}
+              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Previous page"
             >
               &laquo;
@@ -39,8 +43,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           <>
             <li>
               <button
+                type="button"
                 onClick={() => onPageChange(1)}
-                className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                disabled={disabled}
+                className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Go to page 1"
               >
                 1
@@ -52,8 +58,12 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         {pages.map((n) => (
           <li key={n}>
             <button
+              type="button"
               onClick={() => onPageChange(n)}
-              className={`px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 ${currentPage === n ? 'bg-blue-500 text-white' : 'hover:bg-gray-50'}`}
+              disabled={disabled}
+              className={`px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+                currentPage === n ? 'bg-blue-500 text-white' : 'hover:bg-gray-50'
+              }`}
               aria-current={currentPage === n ? 'page' : undefined}
               aria-label={`Go to page ${n}`}
             >
@@ -65,7 +75,13 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           <>
             {endPage < totalPages - 1 && <li className="px-3 py-2">...</li>}
             <li>
-              <button onClick={() => onPageChange(totalPages)} className="px-3 py-2 border rounded-md hover:bg-gray-50">
+              <button
+                type="button"
+                onClick={() => onPageChange(totalPages)}
+                disabled={disabled}
+                className="px-3 py-2 border rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label={`Go to page ${totalPages}`}
+              >
                 {totalPages}
               </button>
             </li>
@@ -74,8 +90,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         {currentPage < totalPages && (
           <li>
             <button
+              type="button"
               onClick={() => onPageChange(currentPage + 1)}
-              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              disabled={disabled}
+              className="px-3 py-2 border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Next page"
             >
               &raquo;

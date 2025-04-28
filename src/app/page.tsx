@@ -76,7 +76,12 @@ export default function Home() {
         </div>
       )}
 
-      <Pagination currentPage={pagination.page} totalPages={pagination.totalPages} onPageChange={setPage} />
+      <Pagination
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        onPageChange={setPage}
+        disabled={isLoading}
+      />
       {selectedAdvocate && (
         <AdvocateProfile advocate={selectedAdvocate} onClose={() => setSelectedAdvocate(null)} />
       )}
