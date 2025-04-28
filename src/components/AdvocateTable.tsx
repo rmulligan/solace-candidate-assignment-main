@@ -47,8 +47,8 @@ export function AdvocateTable({ advocates, isLoading }: AdvocateTableProps) {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap gap-1">
-                  {advocate.specialties.map((specialty, index) => (
-                    <span key={index} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">{specialty}</span>
+                  {advocate.specialties.map((specialty) => (
+                    <span key={specialty} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">{specialty}</span>
                   ))}
                 </div>
               </td>
