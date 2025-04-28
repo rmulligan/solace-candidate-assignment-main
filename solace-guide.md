@@ -1,4 +1,3 @@
-# 
 
 [##rmulligan / ##solace-candidate-assignment-main](https://github.com/rmulligan/solace-candidate-assignment-main)
 
