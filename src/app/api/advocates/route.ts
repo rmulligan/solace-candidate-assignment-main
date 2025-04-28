@@ -4,7 +4,12 @@ import type { Advocate } from '@/types';
 import { advocates } from "../../../db/schema";
 import { advocateData } from "../../../db/seed/advocates";
 import { sql } from "drizzle-orm";
-import { buildSearchCondition, filterAdvocatesMock } from "./searchHelpers";
+import {
+  buildSearchCondition,
+  filterAdvocatesMock,
+  applySpecialtyFilter,
+  filterSpecialtiesMock,
+} from "./searchHelpers";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -17,24 +22,16 @@ export async function GET(request: NextRequest) {
   try {
     if (process.env.DATABASE_URL) {
       let query = db.select().from(advocates);
-      if (search) {
-        query = query.where(buildSearchCondition(search));
-      }
+      if (search) query = query.where(buildSearchCondition(search));
       if (specialties.length > 0) {
-        specialties.forEach((spec) => {
-          query = query.where(sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`);
-        });
+        query = applySpecialtyFilter(query, specialties);
       }
 
       // Count total matching rows
       let totalQuery = db.select({ count: sql`count(*)` }).from(advocates);
-      if (search) {
-        totalQuery = totalQuery.where(buildSearchCondition(search));
-      }
+      if (search) totalQuery = totalQuery.where(buildSearchCondition(search));
       if (specialties.length > 0) {
-        specialties.forEach((spec) => {
-          totalQuery = totalQuery.where(sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`);
-        });
+        totalQuery = applySpecialtyFilter(totalQuery, specialties);
       }
       const totalResult = await totalQuery.execute();
       const total = Number(totalResult[0].count);
@@ -56,9 +53,7 @@ export async function GET(request: NextRequest) {
         ? filterAdvocatesMock(advocateData as Advocate[], search)
         : (advocateData as Advocate[]);
       if (specialties.length > 0) {
-        filtered = filtered.filter((adv) =>
-          specialties.some((spec) => adv.specialties.includes(spec))
-        );
+        filtered = filterSpecialtiesMock(filtered, specialties);
       }
       const total = filtered.length;
       const data = filtered.slice(offset, offset + limit);

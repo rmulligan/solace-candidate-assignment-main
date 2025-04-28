@@ -19,6 +19,8 @@ interface UseAdvocatesResult {
   selectedSpecialties: string[];
   onSpecialtyChange: (specialty: string) => void;
   setPage: (page: number) => void;
+  /** Clear all selected specialties */
+  clearSpecialties: () => void;
 }
 
 /**
@@ -42,6 +44,7 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchAdvocates = async () => {
       try {
         setIsLoading(true);
@@ -51,26 +54,22 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
           limit: limit.toString(),
         });
         if (debouncedSearch) {
-          params.set('search', debouncedSearch);
-        }
-        selectedSpecialties.forEach((spec) => {
-          params.append('specialty', spec);
-        });
-        const response = await fetch(`/api/advocates?${params}`);
+        selectedSpecialties.forEach((spec) => params.append('specialty', spec));
+        const response = await fetch(`/api/advocates?${params}`, { signal: controller.signal });
         if (!response.ok) {
-          throw new Error('Failed to fetch advocates');
-        }
         const data = await response.json();
         setAdvocates(data.data);
         setPagination(data.pagination);
-      } catch (err) {
+      } catch (err: any) {
+        if (err.name === 'AbortError') {
         console.error(err);
-        setError((err as Error).message || 'An error occurred');
+        setError(err.message || 'An error occurred');
       } finally {
         setIsLoading(false);
       }
     };
     fetchAdvocates();
+    return () => controller.abort();
   }, [debouncedSearch, selectedSpecialties, page, limit]);
 
   // Reset to first page when search term or specialties change
@@ -94,5 +93,6 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
       );
     },
     setPage,
+    clearSpecialties: () => setSelectedSpecialties([]),
   };
 }
