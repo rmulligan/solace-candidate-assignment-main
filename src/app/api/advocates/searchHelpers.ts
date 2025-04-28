@@ -1,4 +1,4 @@
-import { or, ilike } from 'drizzle-orm';
+import { or, ilike, sql } from 'drizzle-orm';
 import { advocates } from '../../../db/schema';
 import type { Advocate } from '@/types';
 
@@ -30,4 +30,36 @@ export function filterAdvocatesMock(data: Advocate[], search: string): Advocate[
       advocate.yearsOfExperience.toString().includes(lower)
     );
   });
+}
+/**
+ * Applies specialty filtering to a Drizzle ORM query via JSONB contains operations.
+ */
+export function applySpecialtyFilter<T>(
+  query: T,
+  specialties: string[]
+): T {
+  if (specialties.length === 0) return query;
+  // Build a single OR condition across specialties
+  const condition = specialties
+    .map((spec) =>
+      sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`
+    )
+    .reduce(
+      (acc, cond) => sql`${acc} OR ${cond}`
+    );
+  // Apply the OR condition
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (query as any).where(condition);
+}
+/**
+ * Filters an in-memory array of Advocate objects by specialties.
+ */
+export function filterSpecialtiesMock(
+  data: Advocate[],
+  specialties: string[]
+): Advocate[] {
+  if (specialties.length === 0) return data;
+  return data.filter((advocate) =>
+    specialties.some((spec) => advocate.specialties.includes(spec))
+  );
 }

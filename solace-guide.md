@@ -885,9 +885,9 @@ export function AdvocateProfile({ advocate, onClose }: AdvocateProfileProps) {
 }
 ```
 
-## Step 4: Additional Improvements for [DISCUSSION.md](http://DISCUSSION.md)
+## Step 4: Additional Improvements for [DISCUSSION.md](./DISCUSSION.md)
 
-For the [DISCUSSION.md](http://DISCUSSION.md) file, include the following improvements that would require more time:
+For the [DISCUSSION.md](./DISCUSSION.md) file, include the following improvements that would require more time:
 
 ```other
 # Additional Improvements
@@ -899,7 +899,7 @@ If I had more time to work on this project, here are the improvements I would im
 1. **Server-side filtering and full-text search**: Implement proper full-text search in PostgreSQL
 ```
 
-I'll continue with the [DISCUSSION.md](http://DISCUSSION.md) content and complete the implementation guide.
+I'll continue with the [DISCUSSION.md](./DISCUSSION.md) content and complete the implementation guide.
 
 ```other
 # Additional Improvements
@@ -1131,6 +1131,6 @@ This comprehensive implementation addresses all the requirements in the assignme
 
 The implementation not only fixes the existing bugs but also significantly enhances the application while keeping the code maintainable and scalable. Each PR includes clear reasoning about why changes were made and how they improve the codebase, which directly addresses the assignment's requirement to explain your thought process.
 
-Remember to organize your time efficiently within the 2-hour limit. Focus on the most critical improvements first, and document additional ideas in the [DISCUSSION.md](http://DISCUSSION.md) file for items you couldn't implement due to time constraints.
+Remember to organize your time efficiently within the 2-hour limit. Focus on the most critical improvements first, and document additional ideas in the [DISCUSSION.md](./DISCUSSION.md) file for items you couldn't implement due to time constraints.
 
 ?descriptionFromFileType=function+toLocaleUpperCase()+{+[native+code]+}+File&mimeType=application/octet-stream&fileName=Untitled.md&fileType=undefined&fileExtension=md
