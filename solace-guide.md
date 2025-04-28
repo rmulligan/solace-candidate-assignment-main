@@ -1,5 +1,5 @@
 
-[##rmulligan / ##solace-candidate-assignment-main](https://github.com/rmulligan/solace-candidate-assignment-main)
+[rmulligan / solace-candidate-assignment-main](https://github.com/rmulligan/solace-candidate-assignment-main)
 
 I'll create a comprehensive guide to help you complete the Solace Senior Software Engineer assignment successfully. Based on the provided files, I'll analyze what needs to be improved and outline a step-by-step approach for an exemplary implementation.
 
