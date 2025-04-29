@@ -15,7 +15,15 @@ done
 echo ""
 echo "Postgres is ready."
 # Set DATABASE_URL for Drizzle migrations (override as needed)
-export DATABASE_URL="postgres://postgres:password@localhost:5433/solaceassignment"
+if [[ -z "${DATABASE_URL:-}" ]]; then
+  echo "DATABASE_URL is not set. Retrieving password from Docker container environment."
+  # Get the container's POSTGRES_PASSWORD to avoid hardcoding credentials
+  DB_PASSWORD=$(docker compose exec -T db printenv POSTGRES_PASSWORD)
+  export DATABASE_URL="postgres://postgres:${DB_PASSWORD}@localhost:5433/solaceassignment"
+  echo "Exported DATABASE_URL with container password."
+else
+  echo "Using existing DATABASE_URL environment variable."
+fi
 
 echo "Running database migrations..."
 # Push Drizzle migrations
