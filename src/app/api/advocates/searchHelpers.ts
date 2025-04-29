@@ -38,12 +38,14 @@ export function filterAdvocatesMock(data: Advocate[], search: string): Advocate[
  * Applies specialty filtering to a Drizzle ORM query via JSONB contains operations.
  * The query must support a .where() method that returns the same query type.
  */
-export function applySpecialtyFilter<
-  Q extends { where(condition: unknown): Q }
->(
-  query: Q,
+/**
+ * Applies specialty filtering to a Drizzle ORM query via JSONB contains operations.
+ * Accepts any query builder and returns the updated query.
+ */
+export function applySpecialtyFilter(
+  query: any,
   specialties: string[]
-): Q {
+): any {
   if (specialties.length === 0) {
     return query;
   }
@@ -53,8 +55,8 @@ export function applySpecialtyFilter<
       sql`${advocates.specialties} @> ${JSON.stringify([spec])}::jsonb`
     )
     .reduce((acc, cond) => sql`${acc} OR ${cond}`);
-  // Apply the OR condition
-  return query.where(condition);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (query as any).where(condition);
 }
 /**
  * Filters an in-memory array of Advocate objects by specialties.

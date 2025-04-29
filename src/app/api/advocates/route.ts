@@ -1,5 +1,8 @@
 import { NextRequest } from "next/server";
-import db from "../../../db";
+// import db dynamically inside handler to avoid build-time initialization
+// import db from "../../../db";
+// Disable prerendering to avoid build-time DB initialization
+export const dynamic = 'force-dynamic';
 import type { Advocate } from '@/types';
 import { advocates } from "../../../db/schema";
 import { advocateData } from "../../../db/seed/advocates";
@@ -21,23 +24,35 @@ export async function GET(request: NextRequest) {
 
   try {
     if (process.env.DATABASE_URL) {
-      // Build the base query for advocates
-      let query = db.select().from(advocates);
-      if (search) query = query.where(buildSearchCondition(search));
-      if (specialties.length > 0) {
-        query = applySpecialtyFilter(query, specialties);
-      }
+      // Dynamically import db to avoid import-time errors
+      const { default: db } = await import("../../../db");
+      // Build advocate query with optional search and specialty filters
+      const baseQuery = db.select().from(advocates);
+      const searchedQuery = search
+        ? baseQuery.where(buildSearchCondition(search))
+        : baseQuery;
+      const filteredQuery =
+        specialties.length > 0
+          ? applySpecialtyFilter(searchedQuery, specialties)
+          : searchedQuery;
 
-      // Build the total count query for pagination
-      let totalQuery = db.select({ count: sql`count(*)` }).from(advocates);
-      if (search) totalQuery = totalQuery.where(buildSearchCondition(search));
-      if (specialties.length > 0) {
-        totalQuery = applySpecialtyFilter(totalQuery, specialties);
-      }
-      const totalResult = await totalQuery.execute();
+      // Count total matching rows for pagination
+      const baseTotalQuery = db.select({ count: sql`count(*)` }).from(advocates);
+      const searchedTotal = search
+        ? baseTotalQuery.where(buildSearchCondition(search))
+        : baseTotalQuery;
+      const filteredTotal =
+        specialties.length > 0
+          ? applySpecialtyFilter(searchedTotal, specialties)
+          : searchedTotal;
+      const totalResult = await filteredTotal.execute();
       const total = Number(totalResult[0].count);
 
-      const data = await query.limit(limit).offset(offset).execute();
+      // Fetch paginated data
+      const data = await filteredQuery
+        .limit(limit)
+        .offset(offset)
+        .execute();
       return Response.json({
         data,
         pagination: {
