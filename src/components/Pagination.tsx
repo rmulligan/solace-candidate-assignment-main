@@ -10,6 +10,8 @@ interface PaginationProps {
 
 export function Pagination({ currentPage, totalPages, onPageChange, disabled = false }: PaginationProps) {
   if (totalPages <= 1) {
+    return null;
+  }
 
   let startPage = Math.max(1, currentPage - 2);
   let endPage = Math.min(totalPages, currentPage + 2);
@@ -29,7 +31,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
     <nav className="flex justify-center mt-6" aria-label="Pagination Navigation">
       <ul className="flex space-x-1">
         {currentPage > 1 && (
-          <li>
+          <li key="prev">
             <button
               type="button"
               onClick={() => onPageChange(currentPage - 1)}
@@ -43,7 +45,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
         )}
         {startPage > 1 && (
           <>
-            <li>
+            <li key="first">
               <button
                 type="button"
                 onClick={() => onPageChange(1)}
@@ -54,7 +56,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
                 1
               </button>
             </li>
-            {startPage > 2 && <li className="px-3 py-2">...</li>}
+            {startPage > 2 && <li key="start-ellipsis" className="px-3 py-2">...</li>}
           </>
         )}
         {pages.map((n) => (
@@ -75,8 +77,8 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
         ))}
         {endPage < totalPages && (
           <>
-            {endPage < totalPages - 1 && <li className="px-3 py-2">...</li>}
-            <li>
+            {endPage < totalPages - 1 && <li key="end-ellipsis" className="px-3 py-2">...</li>}
+            <li key="last">
               <button
                 type="button"
                 onClick={() => onPageChange(totalPages)}
@@ -90,7 +92,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, disabled = f
           </>
         )}
         {currentPage < totalPages && (
-          <li>
+          <li key="next">
             <button
               type="button"
               onClick={() => onPageChange(currentPage + 1)}
