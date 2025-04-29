@@ -45,31 +45,47 @@ export function useAdvocates(initialLimit = 10): UseAdvocatesResult {
 
   useEffect(() => {
     const controller = new AbortController();
+
     const fetchAdvocates = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const params = new URLSearchParams({
-          page: page.toString(),
-          limit: limit.toString(),
-        });
+
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('limit', limit.toString());
         if (debouncedSearch) {
+          params.append('search', debouncedSearch);
+        }
         selectedSpecialties.forEach((spec) => params.append('specialty', spec));
-        const response = await fetch(`/api/advocates?${params}`, { signal: controller.signal });
+
+        const response = await fetch(`/api/advocates?${params.toString()}`, {
+          signal: controller.signal,
+        });
         if (!response.ok) {
-        const data = await response.json();
-        setAdvocates(data.data);
-        setPagination(data.pagination);
+          const errorResponse = await response.json();
+          throw new Error(errorResponse.error || 'Failed to fetch advocates');
+        }
+        const result = await response.json();
+        setAdvocates(result.data);
+        setPagination(result.pagination);
       } catch (err: any) {
         if (err.name === 'AbortError') {
-        console.error(err);
-        setError(err.message || 'An error occurred');
+          console.log('Fetch aborted');
+        } else {
+          console.error(err);
+          setError(err.message || 'An error occurred');
+        }
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchAdvocates();
-    return () => controller.abort();
+
+    return () => {
+      controller.abort();
+    };
   }, [debouncedSearch, selectedSpecialties, page, limit]);
 
   // Reset to first page when search term or specialties change

@@ -1,0 +1,23 @@
+
+> solace-candidate-assignment@0.1.0 build
+> next build
+
+   ▲ Next.js 15.3.1
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 0ms
+   Linting and checking validity of types ...
+
+Failed to compile.
+
+./src/db/migrate.js
+1:21  Error: Require statement not part of import statement.  @typescript-eslint/no-var-requires
+2:21  Error: Require statement not part of import statement.  @typescript-eslint/no-var-requires
+3:18  Error: Require statement not part of import statement.  @typescript-eslint/no-var-requires
+
+./src/db/seed/advocates.ts
+1:8  Error: 'db' is defined but never used.  @typescript-eslint/no-unused-vars
+2:10  Error: 'advocates' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

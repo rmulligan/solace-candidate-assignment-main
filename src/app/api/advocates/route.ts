@@ -21,13 +21,14 @@ export async function GET(request: NextRequest) {
 
   try {
     if (process.env.DATABASE_URL) {
+      // Build the base query for advocates
       let query = db.select().from(advocates);
       if (search) query = query.where(buildSearchCondition(search));
       if (specialties.length > 0) {
         query = applySpecialtyFilter(query, specialties);
       }
 
-      // Count total matching rows
+      // Build the total count query for pagination
       let totalQuery = db.select({ count: sql`count(*)` }).from(advocates);
       if (search) totalQuery = totalQuery.where(buildSearchCondition(search));
       if (specialties.length > 0) {

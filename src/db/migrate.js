@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { drizzle } = require("drizzle-orm/postgres-js");
 const { migrate } = require("drizzle-orm/postgres-js/migrator");
 const postgres = require("postgres");
